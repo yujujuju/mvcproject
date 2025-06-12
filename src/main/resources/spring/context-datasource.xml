@@ -25,7 +25,7 @@
 
     <!-- 3. Mapper 인터페이스 등록 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.example.board.dao"/>
+        <property name="basePackage" value="com.example.mvcproject.mapper"/>
     </bean>
 
 </beans>

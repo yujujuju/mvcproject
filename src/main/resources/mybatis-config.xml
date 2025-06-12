@@ -4,6 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="com.example.board.model.Board" alias="Board"/>
+        <package name="com.example.mvcproject.vo"/>
     </typeAliases>
 </configuration>
