@@ -1,0 +1,7 @@
+/* main.css */
+
+.logo-img {
+    height: 70px;
+    object-fit: contain;
+    padding-right: 10px;
+}
