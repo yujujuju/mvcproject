@@ -7,9 +7,11 @@ public class UserVO {
 
     private int id;              // PK
     private String userId;       // 로그인 아이디
-    private String password;
-    private String nickname;
-    private String createdAt;
+    private String password;    // 비밀번호
+    private String nickname;    // 닉네임
+    private String createdAt;   // 등록일자
+    private String role; // 권한(USER or ADMIN)
+
 
     public int getId() {
         return id;
@@ -50,5 +52,13 @@ public class UserVO {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

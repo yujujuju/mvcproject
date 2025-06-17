@@ -42,4 +42,13 @@ public class UserServiceImpl {
         return userMapper.countByUserId(userId) > 0;
     }
 
+    /**
+     * 아이디 조회(로그인)
+     * @param userId
+     * @return
+     */
+    public UserVO getUserById(String userId) {
+        return userMapper.selectUserById(userId);
+    }
+
 }

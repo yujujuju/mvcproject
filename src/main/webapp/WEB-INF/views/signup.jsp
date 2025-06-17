@@ -69,11 +69,14 @@
             if (!nicknameRegex.test(nickname)) {
                 alert('닉네임은 2~8자의 한글, 영문, 숫자만 사용할 수 있어요.');
                 $(this).focus();
+                return false;
             }
         });
 
-        // ✅ 가입 완료 버튼 클릭 시 유효성 검사 후 form 전송
-        $('#submitBtn').on('click', function () {
+        // 가입 완료 버튼 클릭 시 유효성 검사 후 form 전송
+        $('#submitBtn').on('click', function (e) {
+            e.preventDefault(); // ❗ form 기본 제출 막기
+
             const userid = $('#userId').val().trim();
             const pw = $('#password').val();
             const confirmPw = $('#confirmPassword').val();
@@ -99,7 +102,7 @@
                 $('#nickname').focus(); return;
             }
 
-            // 유효성 통과 시 폼 제출
+            // 모든 유효성 검사 통과 시 폼 제출
             $('#signupForm').submit();
         });
     });
@@ -143,6 +146,12 @@
             </div>
 
             <button class="btn btn-primary btn-lg btn-block" type="button" id="submitBtn">가입 완료</button>
+
+            <c:if test="${not empty msg}">
+                <div class="alert alert-danger mt-3">
+                        ${msg}
+                </div>
+            </c:if>
 
         </form>
     </div>

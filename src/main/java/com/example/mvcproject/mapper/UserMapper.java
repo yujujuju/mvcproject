@@ -15,4 +15,6 @@ public interface UserMapper {
     /* 아이디 중복체크 */
     int countByUserId(String userId);
 
+    /* 아이디 조회 */
+    UserVO selectUserById(String userId);
 }

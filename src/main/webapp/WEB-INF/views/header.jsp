@@ -9,9 +9,11 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-
-    <!-- Optional Theme (선택) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap-theme.min.css">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 
     <!-- 내 CSS -->
     <link rel="stylesheet" href="${ctx}/css/main.css">
@@ -28,11 +30,29 @@
                 <img src="${ctx}/images/logo.png" alt="책갈피" class="logo-img" height="40">
             </a>
 
-            <!-- 로그인 / 회원가입 버튼 -->
             <div>
-                <a href="${ctx}/login.jsp" class="btn btn-outline-light mr-2">로그인</a>
-                <a href="${ctx}/user/signup" class="btn btn-outline-light">회원가입</a>
+                <!-- 로그인 상태 확인 -->
+                <c:choose>
+                    <c:when test="${not empty sessionScope.loginUser}">
+                        <span class="text-white mr-3">
+                            <strong>${sessionScope.loginUser.nickname}</strong> 님 환영합니다!
+                        </span>
+                        <a href="${ctx}/user/logout" class="btn btn-outline-light">로그아웃</a>
+                    </c:when>
+
+                    <c:otherwise>
+                        <a href="${ctx}/user/login" class="btn btn-outline-light mr-2">로그인</a>
+                        <a href="${ctx}/user/signup" class="btn btn-outline-light">회원가입</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <!-- 로그인 했을 시 마이페이지 노출 -->
+                <c:if test="${not empty sessionScope.loginUser}">
+                    <a href="${pageContext.request.contextPath}/mypage" class="btn btn-outline-light mr-2">마이페이지</a>
+                </c:if>
+
             </div>
+
         </div>
     </div>
 </header>

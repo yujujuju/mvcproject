@@ -1,4 +1,4 @@
-package com.example.mvcproject.web;
+package com.example.mvcproject.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
