@@ -36,6 +36,6 @@ public class HomeController {
             return "redirect:/user/login"; //로그인 안했을 시
         }
 
-        return "mypage"; //로그인 했으면 마이페이지 진입
+        return "mypage/mypage"; //로그인 했으면 마이페이지 진입
     }
 }

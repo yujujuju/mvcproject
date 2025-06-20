@@ -73,6 +73,20 @@
         <version>1.7.36</version>
       </dependency>
 
+      <!-- 암호화 -->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>6.5.0</version> <!-- 버전은 프로젝트에 맞게 -->
+      </dependency>
+
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+
 
   </dependencies>
   <build>

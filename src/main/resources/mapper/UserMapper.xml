@@ -35,7 +35,7 @@
 
         <!-- 로그인 -->
         <select id="selectUserById" parameterType="String" resultMap="userMap">
-            SELECT ID, USER_ID, PASSWORD, NICKNAME, CREATED_AT
+            SELECT ID, USER_ID, PASSWORD, NICKNAME, CREATED_AT,ROLE
             FROM USERS
             WHERE USER_ID = #{userId}
         </select>

@@ -27,7 +27,7 @@
 
 .mb-4 {
     width: 150px;
-    height: 150px;
+    height: 80px;
 }
 
 .sidebar {
@@ -43,3 +43,19 @@
     border-radius: 4px;
 }
 
+ nav {
+     min-height: 100%;
+ }
+
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.sidebar-sticky {
+    position: static;
+    padding-top: 20px;
+}
+.row-full {
+    min-height: 100vh;
+}

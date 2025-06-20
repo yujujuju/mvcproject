@@ -109,7 +109,7 @@
 </script>
 
 
-<%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/layout/header.jsp" %>
 
 <div class="container mt-5">
     <div class="input-form col-md-8 mx-auto">
