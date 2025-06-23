@@ -1,11 +1,15 @@
 package com.example.mvcproject.service;
 
 import com.example.mvcproject.mapper.UserMapper;
+import com.example.mvcproject.vo.BookRequestVO;
+import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl {
@@ -50,5 +54,33 @@ public class UserServiceImpl {
     public UserVO getUserById(String userId) {
         return userMapper.selectUserById(userId);
     }
+
+    /**
+     * 도서 요청
+     * @param requestBook
+     * @return
+     */
+    public int saveBookRequest(BookRequestVO requestBook) {
+        return userMapper.insertBookRequest(requestBook);
+    }
+
+    /**
+     * 도서 요청 횟수 제한
+     * @param userId
+     * @return
+     */
+    public int countTodayRequest(String userId) {
+        return userMapper.countTodayRequest(userId);
+    }
+
+    /**
+     * 도서 요청 현황
+     * @param userId
+     * @return
+     */
+    public List<BookRequestVO> getBookRequestList(String userId) {
+        return userMapper.selectRequestList(userId);
+    }
+
 
 }

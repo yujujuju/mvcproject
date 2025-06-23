@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mvcproject.mapper.BoardMapper">
+
+    <resultMap id="bookMap" type="BookVO">
+        <id property="bookId" column="BOOK_ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="author" column="AUTHOR"/>
+        <result property="publisher" column="PUBLISHER"/>
+        <result property="pubDate" column="PUB_DATE"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="imagePath" column="IMAGE_PATH"/>
+    </resultMap>
+
+    <!--도서 단건 조회-->
+    <select id="selectBookById" parameterType="int" resultMap="bookMap">
+        SELECT
+            BOOK_ID,
+            TITLE,
+            AUTHOR,
+            PUBLISHER,
+            PUB_DATE,
+            DESCRIPTION,
+            IMAGE_PATH
+        FROM BOOK
+        WHERE BOOK_ID = #{bookId}
+    </select>
+
+    <!-- 도서 목록 조회 -->
+    <select id="selectAllBooks" resultType="BookVO" resultMap="bookMap">
+        SELECT *
+        FROM (
+                 SELECT ROWNUM AS rn, b.* -- 중간쿼리 : ROMNUM 붙여 상위 endRow개까지 잘라냄
+                 FROM (
+                          SELECT
+                              BOOK_ID,
+                              TITLE,
+                              AUTHOR,
+                              PUBLISHER,
+                              PUB_DATE,
+                              DESCRIPTION,
+                              IMAGE_PATH
+                          FROM BOOK
+                          ORDER BY BOOK_ID DESC
+                      ) b -- 서브쿼리 : 데이터를 BOOK_ID DESC 순으로 정렬
+                 WHERE <![CDATA[ ROWNUM <= #{endRow} ]]>
+        )
+        WHERE <![CDATA[ rn >= #{startRow} ]]> -- 바깥쿼리 : 거기서 다시 startRow이상인 행만 뽑음
+    </select>
+
+    <!-- 도서 총 개수 -->
+    <select id="getBookCount" resultType="int">
+        SELECT COUNT(*) FROM BOOK
+    </select>
+
+    <!--도서 등록-->
+    <insert id="insertBook" parameterType="BookVO">
+        INSERT INTO BOOK (
+            BOOK_ID,
+            TITLE,
+            AUTHOR,
+            PUBLISHER,
+            PUB_DATE,
+            DESCRIPTION,
+            IMAGE_PATH
+        )
+        VALUES (
+                   BOOK_SEQ.NEXTVAL,
+                   #{title},
+                   #{author},
+                   #{publisher},
+                   TO_DATE(#{pubDate}, 'YYYY-MM-DD'),
+                   #{description},
+                   #{imagePath}
+               )
+    </insert>
+
+    <!--도서 수정 -->
+    <update id="updateBook" parameterType="BookVO">
+        UPDATE BOOK
+        SET
+            TITLE = #{title},
+            AUTHOR = #{author},
+            PUBLISHER = #{publisher},
+            PUB_DATE = TO_DATE(#{pubDate}, 'YYYY-MM-DD'),
+            DESCRIPTION = #{description}
+            <if test="imagePath != null">
+                , IMAGE_PATH = #{imagePath}
+            </if>
+        WHERE BOOK_ID = #{bookId}
+    </update>
+
+    <!-- 도서 삭제 -->
+    <delete id="deleteBook" parameterType="int">
+        DELETE FROM BOOK
+        WHERE BOOK_ID = #{id}
+    </delete>
+
+    <!-- 최신 등록 도서 -->
+    <select id="selectRecentBooks" resultType="BookVO" resultMap="bookMap">
+        SELECT BOOK_ID, TITLE, AUTHOR, PUBLISHER, PUB_DATE, DESCRIPTION, IMAGE_PATH
+        FROM BOOK
+        ORDER BY BOOK_ID DESC
+            FETCH FIRST 10 ROWS ONLY
+    </select>
+
+
+
+</mapper>
+

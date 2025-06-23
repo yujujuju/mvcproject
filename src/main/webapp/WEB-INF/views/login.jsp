@@ -13,9 +13,6 @@
                 $('.form-signin').on('submit', function () {
                     const userId = $('#userId').val();
                     const password = $('#password').val();
-                    console.log("서버에 전송할 ID:", userId);
-                    console.log("서버에 전송할 PW:", password);
-
                 });
             });
         </script>
