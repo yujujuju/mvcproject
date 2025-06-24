@@ -105,6 +105,9 @@ public class UserController {
             return "login";
         }
 
+        //최근 접속일 세팅
+        userService.updateLastLogin(user.getUserId());
+        dbuser = userService.getUserById(user.getUserId());
         session.setAttribute("loginUser", dbuser);
         return "redirect:/main";
     }
@@ -173,7 +176,6 @@ public class UserController {
      */
     @GetMapping("/requestList")
     public String requestList(Model model, @SessionAttribute("loginUser")UserVO loginUser) {
-
 
         List<BookRequestVO> requestList = userService.getBookRequestList(loginUser.getUserId());
         model.addAttribute("requestList", requestList);

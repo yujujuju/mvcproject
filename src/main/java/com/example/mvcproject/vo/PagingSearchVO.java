@@ -13,7 +13,6 @@ public class PagingSearchVO {
     private int totalRecord;      // 전체 데이터 수 (DB에서 조회)
     private int totalPage;        // 전체 페이지 수
 
-
     public void setTotalRecord(int totalRecord) {
         this.totalRecord = totalRecord;
         this.totalPage = (int) Math.ceil((double) totalRecord / pageSize);
@@ -66,4 +65,5 @@ public class PagingSearchVO {
     public void setTotalPage(int totalPage) {
         this.totalPage = totalPage;
     }
+
 }

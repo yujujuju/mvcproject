@@ -5,6 +5,7 @@ import com.example.mvcproject.service.BoardServiceImpl;
 import com.example.mvcproject.vo.BookRequestVO;
 import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.PagingSearchVO;
+import com.example.mvcproject.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -239,7 +240,6 @@ public class AdminController {
     @PostMapping("/book/approve")
     public String approveRequest(@RequestParam("requestId") int requestId, RedirectAttributes redirectAttributes) {
 
-
         //요청 상태 '승인'으로 업데이트
         adminService.approveBookRequest(requestId);
 
@@ -249,6 +249,53 @@ public class AdminController {
         //도서 등록 화면으로 리다이렉트 + 요청 데이터 전달
         redirectAttributes.addFlashAttribute("preFillBook", request);
         return "redirect:/admin/book/register";
+    }
+
+    /**
+     * 요청 도서 거절
+     * @param requestId
+     * @param rejectReason
+     * @param redirectAttributes
+     * @return
+     */
+    @PostMapping("/book/reject")
+    public String rejectRequest(@RequestParam("requestId")int requestId, @RequestParam("rejectReason") String rejectReason, RedirectAttributes redirectAttributes) {
+
+        //요청 상태 '거절'로 업데이트
+        adminService.rejectBookRequest(requestId, rejectReason);
+
+        // 알림 메세지 전달
+        redirectAttributes.addFlashAttribute("msg","도서 요청이 거절되었습니다.");
+
+        return "redirect:/admin/book/requestList";
+    }
+
+    /**
+     * 회원 목록 조회
+     * @param keyword
+     * @param model
+     * @return
+     */
+    @GetMapping("/user/list")
+    public String userList(@RequestParam(defaultValue = "1")int page,@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "nickname") String searchType, Model model) {
+
+        UserVO user = new UserVO();
+        user.setPage(page);
+        user.setPageSize(10);
+        user.setKeyword(keyword);
+        user.setSearchType(searchType);
+
+        int totalCount = adminService.getUserCount(user);
+        user.setTotalRecord(totalCount);
+
+        //유저 목록 조회
+        List<UserVO> userList = adminService.getUserList(user);
+
+        model.addAttribute("userList", userList);
+        model.addAttribute("searchName", keyword);
+        model.addAttribute("paging", user);
+        model.addAttribute("searchType",searchType);
+        return "mypage/admin/userList";
     }
 
 

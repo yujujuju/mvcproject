@@ -29,7 +29,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/admin/user/list">
                         <span data-feather="user"></span>
                         회원 목록 조회
                     </a>

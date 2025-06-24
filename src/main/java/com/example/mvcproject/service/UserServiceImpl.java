@@ -82,5 +82,13 @@ public class UserServiceImpl {
         return userMapper.selectRequestList(userId);
     }
 
+    /**
+     * 마지막 접속일
+     * @param userId
+     */
+    public void updateLastLogin(String userId) {
+        userMapper.updateLastLogin(userId);
+    }
+
 
 }

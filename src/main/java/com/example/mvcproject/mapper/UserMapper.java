@@ -4,6 +4,7 @@ import com.example.mvcproject.vo.BookRequestVO;
 import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.UserVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -54,4 +55,10 @@ public interface UserMapper {
      * @return
      */
     List<BookRequestVO> selectRequestList(String userId);
+
+    /**
+     * 마지막 접속일
+     * @param userId
+     */
+    void updateLastLogin(String userId);
 }
