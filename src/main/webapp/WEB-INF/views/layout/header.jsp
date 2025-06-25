@@ -21,7 +21,9 @@
 
     <!-- 내 CSS -->
     <link rel="stylesheet" href="${ctx}/css/main.css">
+    <link rel="stylesheet" href="${ctx}/css/book.css">
 </head>
+
 <body>
 
 <!-- 공통 헤더 (navbar) -->
@@ -30,9 +32,11 @@
         <div class="container d-flex justify-content-between align-items-center">
 
             <!-- 로고 -->
-            <a href="${ctx}/" class="navbar-brand">
-                <img src="${ctx}/images/logo.png" alt="책갈피" class="logo-img" height="40">
-            </a>
+            <header class="main-header d-flex align-items-center px-4 py-2">
+                <a href="${ctx}/" class="d-inline-block">
+                    <img src="${ctx}/images/logo.png" alt="로고" class="site-logo">
+                </a>
+            </header>
 
             <div>
                 <!-- 로그인 상태 확인 -->

@@ -14,29 +14,22 @@
   }
 </script>
 
+
 <main role="main">
   <section class="bg-light" style="min-height: 100vh;">
-    <div class="container-fluid px-0">
-      <div class="row no-gutters">
+        <%@ include file="/WEB-INF/views/layout/menubar.jsp" %>
+            <div class="container-fluid px-0">
+              <div class="row no-gutters">
 
         <!-- ✅ 사이드바 -->
-        <nav class="col-md-2 bg-white border-right">
-          <div class="sidebar-sticky pt-4 pl-3">
-            <ul class="nav flex-column">
-              <li class="nav-item"><a class="nav-link active" href="#">🏠 메인</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">👤 마이페이지</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">📚 찜한 도서</a></li>
-              <li class="nav-item"><a class="nav-link" href="#">📝 도서 요청</a></li>
-            </ul>
-          </div>
-        </nav>
 
         <!-- ✅ 본문 -->
-        <div class="col-md-10 px-4 py-4">
-          <h4 class="font-weight-bold mb-3 d-flex justify-content-between align-items-center">
-            <span>최신 등록 도서</span>
-            <a href="${ctx}/admin/book/list" class="text-secondary small">더보기 +</a>
-          </h4>
+        <div class="col-12 d-flex justify-content-center">
+          <div class="content-wrapper px-4 py-4" style="max-width: 1200px; width: 100%;">
+            <h4 class="font-weight-bold mb-3 d-flex justify-content-between align-items-center">
+                <span>최신 등록 도서</span>
+                <a href="${ctx}/admin/book/list" class="text-secondary small">더보기 +</a>
+              </h4>
 
           <div class="slider-container px-3">
             <button class="scroll-btn left" onclick="scrollSlider(-1)">‹</button>

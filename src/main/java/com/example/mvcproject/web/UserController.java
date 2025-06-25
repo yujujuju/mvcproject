@@ -180,9 +180,6 @@ public class UserController {
         List<BookRequestVO> requestList = userService.getBookRequestList(loginUser.getUserId());
         model.addAttribute("requestList", requestList);
 
-        System.out.println("요청 리스트 수: " + requestList.size());
-
-
         return "mypage/user/bookRequestList";
 
     }

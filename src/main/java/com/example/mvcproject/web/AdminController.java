@@ -292,7 +292,7 @@ public class AdminController {
         List<UserVO> userList = adminService.getUserList(user);
 
         model.addAttribute("userList", userList);
-        model.addAttribute("searchName", keyword);
+        model.addAttribute("searchName", keyword);  
         model.addAttribute("paging", user);
         model.addAttribute("searchType",searchType);
         return "mypage/admin/userList";
