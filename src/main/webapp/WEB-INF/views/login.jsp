@@ -14,6 +14,12 @@
                     const userId = $('#userId').val();
                     const password = $('#password').val();
                 });
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const error = urlParams.get('error');
+                if (error === 'loginRequired') {
+                    alert("로그인이 필요한 서비스입니다.");
+                }
             });
         </script>
     </head>

@@ -19,3 +19,26 @@
     font-size: 0.9rem;
     color: #555;
 }
+
+.star-rating i {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.star-rating i.active {
+    color: gold;
+}
+
+.star-rating i.half::before {
+    content: "\f089";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: gold;
+    position: absolute;
+}
+
+textarea {
+    resize: none;
+}

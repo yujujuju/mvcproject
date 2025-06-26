@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mvcproject.mapper.ReviewMapper">
+
+    <resultMap id="reviewMap" type="ReviewVO">
+        <id property="reviewId" column="REVIEW_ID" />
+        <result property="bookId" column="BOOK_ID" />
+        <result property="userId" column="USER_ID" />
+        <result property="nickname" column="NICKNAME" />
+        <result property="rating" column="RATING" />
+        <result property="content" column="CONTENT" />
+        <result property="createDate" column="CREATED_AT " />
+    </resultMap>
+
+    <!-- 댓글 INSERT -->
+    <insert id="insertReview" parameterType="ReviewVO">
+        <selectKey resultType="int" keyProperty="reviewId" order="BEFORE">
+            SELECT REVIEW_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO REVIEW (
+            REVIEW_ID,
+            BOOK_ID,
+            USER_ID,
+            RATING,
+            CONTENT,
+            CREATED_DATE
+        ) VALUES (
+            REVIEW_SEQ.NEXTVAL,
+            #{bookId},
+            #{userId},
+            #{rating},
+            #{content},
+            SYSDATE
+        )
+    </insert>
+
+    <!-- 댓글 SELECT -->
+    <select id="selectReviewByBookId" parameterType="int" resultMap="reviewMap">
+        SELECT
+            R.REVIEW_ID,
+            R.BOOK_ID,
+            R.USER_ID,
+            U.NICKNAME,
+            R.RATING,
+            R.CONTENT,
+            R.CREATED_AT
+        FROM REVIEW R
+             JOIN USERS U ON R.USER_ID = U.USER_ID
+        WHERE R.BOOK_ID = #{bookId}
+        ORDER BY R.CREATED_AT   DESC
+    </select>
+
+
+
+</mapper>

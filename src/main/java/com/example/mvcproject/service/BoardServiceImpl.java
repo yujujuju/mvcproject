@@ -78,6 +78,7 @@ public class BoardServiceImpl {
     public List<BookVO> getRecentBooks() {
         return boardMapper.selectRecentBooks();
     }
+    
 
 
 }

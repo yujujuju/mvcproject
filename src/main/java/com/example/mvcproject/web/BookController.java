@@ -1,8 +1,10 @@
 package com.example.mvcproject.web;
 
 import com.example.mvcproject.service.BoardServiceImpl;
+import com.example.mvcproject.service.ReviewServiceImpl;
 import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.PagingSearchVO;
+import com.example.mvcproject.vo.ReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,9 @@ public class BookController {
 
     @Autowired
     private BoardServiceImpl boardService;
+
+    @Autowired
+    private ReviewServiceImpl reviewService;
 
     @Autowired
     public BookController(BoardServiceImpl boardService) {
@@ -60,8 +65,15 @@ public class BookController {
      */
     @GetMapping("/detail/{id}")
     public String BookDetail(@PathVariable("id") int id, Model model) {
+
+        // 도서 정보
         BookVO book = boardService.getBookById(id);
         model.addAttribute("book", book);
+
+        // 리뷰
+        List<ReviewVO> reviewList = reviewService.getReviewByBookId(id);
+        model.addAttribute("reviewList", reviewList);
+
         return "book/bookDetail";
     }
 
