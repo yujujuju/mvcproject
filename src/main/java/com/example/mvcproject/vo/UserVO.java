@@ -16,7 +16,6 @@ public class UserVO extends PagingSearchVO{
     private String keyword;     // 검색어
     private String searchType;  // 검색 조건 (nickname or userId)
 
-
     public int getId() {
         return id;
     }

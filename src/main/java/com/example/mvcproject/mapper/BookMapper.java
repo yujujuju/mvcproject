@@ -10,7 +10,7 @@ import java.util.List;
  * 도서 mapper
  */
 @Mapper
-public interface BoardMapper {
+public interface BookMapper {
 
     /**
      * 도서 목록 조회
@@ -57,4 +57,10 @@ public interface BoardMapper {
      * @return
      */
     List<BookVO> selectRecentBooks();
+
+    /**
+     * 도서 리뷰 높은 순
+     * @return
+     */
+    List<BookVO> selectTopBooksByAvgRating();
 }

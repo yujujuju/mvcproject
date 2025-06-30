@@ -1,7 +1,7 @@
 package com.example.mvcproject.web;
 
 import com.example.mvcproject.service.AdminServiceImpl;
-import com.example.mvcproject.service.BoardServiceImpl;
+import com.example.mvcproject.service.BookServiceImpl;
 import com.example.mvcproject.vo.BookRequestVO;
 import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.PagingSearchVO;
@@ -31,7 +31,7 @@ public class AdminController {
     private AdminServiceImpl adminService;
 
     @Autowired
-    private BoardServiceImpl boardService;
+    private BookServiceImpl boardService;
 
     @Autowired
     public AdminController(AdminServiceImpl adminService) {

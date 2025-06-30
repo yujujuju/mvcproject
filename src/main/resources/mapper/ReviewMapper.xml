@@ -12,7 +12,9 @@
         <result property="nickname" column="NICKNAME" />
         <result property="rating" column="RATING" />
         <result property="content" column="CONTENT" />
-        <result property="createDate" column="CREATED_AT " />
+        <result property="createDate" column="CREATED_AT" />
+        <result property="likeCount" column="LIKE_COUNT" />
+        <result property="likedByUser" column="LIKED_BY_USER" />
     </resultMap>
 
     <!-- 댓글 INSERT -->
@@ -26,7 +28,7 @@
             USER_ID,
             RATING,
             CONTENT,
-            CREATED_DATE
+            CREATED_AT
         ) VALUES (
             REVIEW_SEQ.NEXTVAL,
             #{bookId},
@@ -37,8 +39,8 @@
         )
     </insert>
 
-    <!-- 댓글 SELECT -->
-    <select id="selectReviewByBookId" parameterType="int" resultMap="reviewMap">
+    <!-- 댓글 SELECT + 좋아요 수 SELECT -->
+    <select id="selectReviewByBookId" parameterType="map" resultMap="reviewMap">
         SELECT
             R.REVIEW_ID,
             R.BOOK_ID,
@@ -46,12 +48,73 @@
             U.NICKNAME,
             R.RATING,
             R.CONTENT,
-            R.CREATED_AT
+            R.CREATED_AT,
+
+            -- 좋아요 수
+            (SELECT COUNT(*)
+            FROM REVIEW_LIKE RL
+            WHERE RL.REVIEW_ID = R.REVIEW_ID) AS LIKE_COUNT,
+
+            -- 로그인한 유저가 좋아요 눌렀는지 여부 (0 or 1)
+            (SELECT COUNT(*)
+            FROM REVIEW_LIKE RL2
+            WHERE RL2.REVIEW_ID = R.REVIEW_ID
+            <if test="loginUserId != null">
+                AND RL2.USER_ID = #{loginUserId}
+            </if>
+            ) AS LIKED_BY_USER
+
         FROM REVIEW R
-             JOIN USERS U ON R.USER_ID = U.USER_ID
+        JOIN USERS U ON R.USER_ID = U.USER_ID
         WHERE R.BOOK_ID = #{bookId}
-        ORDER BY R.CREATED_AT   DESC
+        ORDER BY R.CREATED_AT DESC
     </select>
+
+
+    <!-- 댓글 UPDATE -->
+    <update id="updateReview" parameterType="ReviewVO">
+        UPDATE REVIEW
+           SET CONTENT = #{content}
+           WHERE REVIEW_ID = #{reviewId}
+    </update>
+
+    <!-- 댓글 DELETE -->
+    <delete id="deleteReview">
+        DELETE FROM REVIEW
+              WHERE REVIEW_ID = #{reviewId}
+              AND USER_ID = #{userId}
+    </delete>
+
+    <!-- 좋아요 추가 -->
+    <insert id="insertReviewLike" parameterType="ReviewLikeVO">
+        INSERT INTO REVIEW_LIKE (USER_ID, REVIEW_ID)
+        VALUES (
+                #{userId}, #{reviewId}
+               )
+    </insert>
+
+    <!-- 좋아요 취소 -->
+    <delete id="deleteReviewLike" parameterType="ReviewLikeVO">
+        DELETE FROM REVIEW_LIKE
+        WHERE USER_ID = #{userId}
+          AND REVIEW_ID = #{reviewId}
+    </delete>
+
+    <!-- 사용자가 해당 리뷰에 좋아요 눌렀는지 확인 -->
+    <select id="isReviewLikedByUser" parameterType="ReviewLikeVO" resultType="int">
+        SELECT COUNT(*)
+        FROM REVIEW_LIKE
+        WHERE USER_ID = #{userId}
+          AND REVIEW_ID = #{reviewId}
+    </select>
+
+    <!-- 리뷰의 총 좋아요 수 -->
+    <select id="countReviewLikes" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM REVIEW_LIKE
+        WHERE REVIEW_ID = #{reviewId}
+    </select>
+
 
 
 

@@ -14,6 +14,7 @@ public class BookVO extends PagingSearchVO {
     private Date pubDate;        // 출판일
     private String description;    // 줄거리 / 내용
     private String imagePath;      // 썸네일 이미지 경로
+    private Double avgRating; // 평균 별점
 
     public int getBookId() {
         return bookId;
@@ -69,5 +70,13 @@ public class BookVO extends PagingSearchVO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public Double getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(Double avgRating) {
+        this.avgRating = avgRating;
     }
 }

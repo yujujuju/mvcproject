@@ -14,8 +14,10 @@ public class ReviewVO {
     private Double  rating; // 별점
     private String content; // 리뷰 내용
     private Date createDate; // 작성일
+    private int likeCount; // 좋아요 카운트
+    private boolean likedByUser; // 좋아요 누른 유저
 
-    public ReviewVO(int reviewId, int bookId, String userId, String nickname, Double rating, String content, Date createDate) {
+    public ReviewVO(int reviewId, int bookId, String userId, String nickname, Double rating, String content, Date createDate,int likeCount,boolean likedByUser) {
         this.reviewId = reviewId;
         this.bookId = bookId;
         this.userId = userId;
@@ -23,6 +25,12 @@ public class ReviewVO {
         this.rating = rating;
         this.content = content;
         this.createDate = createDate;
+        this.likeCount = likeCount;
+        this.likedByUser = likedByUser;
+    }
+
+    public ReviewVO() {
+        // 기본 생성자
     }
 
     public int getReviewId() {
@@ -79,5 +87,21 @@ public class ReviewVO {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public boolean isLikedByUser() {
+        return likedByUser;
+    }
+
+    public void setLikedByUser(boolean likedByUser) {
+        this.likedByUser = likedByUser;
     }
 }

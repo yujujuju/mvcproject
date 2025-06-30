@@ -1,16 +1,13 @@
 package com.example.mvcproject.web;
 
-import com.example.mvcproject.service.AdminServiceImpl;
-import com.example.mvcproject.service.BoardServiceImpl;
+import com.example.mvcproject.service.BookServiceImpl;
 import com.example.mvcproject.vo.BookVO;
-import com.example.mvcproject.vo.PagingSearchVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpSession;
-import java.awt.print.Book;
 import java.util.List;
 
 /**
@@ -20,7 +17,7 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    private BoardServiceImpl boardService;
+    private BookServiceImpl bookService;
 
     @GetMapping("/")
     public String root() {
@@ -33,9 +30,13 @@ public class HomeController {
      */
     @GetMapping("/main")
     public String home(Model model) {
-        //최근 등록 도서
-        List<BookVO> recentBooks = boardService.getRecentBooks();
+        // 최근 등록 도서
+        List<BookVO> recentBooks = bookService.getRecentBooks();
         model.addAttribute("recentBooks", recentBooks);
+
+        // 베스트 리뷰 도서 (리뷰 높은 순)
+        List<BookVO> topReviewBooks = bookService.getTopBooksByAvgRating();
+        model.addAttribute("topReviewBooks", topReviewBooks);
         return "home";
     }
 

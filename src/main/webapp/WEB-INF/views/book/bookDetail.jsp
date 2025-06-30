@@ -6,72 +6,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script>
-    $(function() {
-
-        $('#reviewForm').on('submit', function(e) {
-            const content = $('textarea[name="content"]').val().trim();
-            const rating = parseFloat($('#rating').val());
-
-            $('#content').on('input', function () {
-                const length = $(this).val().length;
-                $('#charCount').text(length + "/3000");
-            });
-
-            if (content.length < 10) {
-                alert("리뷰 내용을 10자 이상 입력해주세요.");
-                $('#content').focus();
-                e.preventDefault();
-                return false;
-            }
-
-            if (content === '') {
-                alert('리뷰 내용을 입력해주세요.');
-                e.preventDefault();
-                return;
-            }
-
-            if (isNaN(rating) || rating < 0.5 || rating > 5) {
-                alert('별점은 0.5점 이상 5점 이하로 선택해야 합니다.');
-                e.preventDefault();
-                return false;
-            }
-        });
-
-        $('#star-rating i').on('mousemove click', function (e) {
-            const index = parseInt($(this).data('index'));
-            const offset = $(this).offset();
-            const half = (e.pageX - offset.left) < ($(this).width() / 2);
-            let rating = index - (half ? 0.5 : 0);
-            $('#rating').val(rating);
-
-            $('#star-rating i').each(function (i) {
-                $(this).removeClass('fa-solid fa-star fa-star-half-stroke active half');
-                const current = i + 1;
-                if (current <= rating) {
-                    $(this).addClass('fa-solid fa-star active');
-                } else if (current - 0.5 === rating) {
-                    $(this).addClass('fa-solid fa-star-half-stroke active');
-                } else {
-                    $(this).addClass('fa-regular fa-star');
-                }
-            });
-        });
-
-        $('#star-rating').on('mouseleave', function () {
-            const rating = parseFloat($('#rating').val(rating.toFixed(1)));
-            $('#star-rating i').each(function (i) {
-                $(this).removeClass('fa-solid fa-star fa-star-half-stroke active half');
-                const current = i + 1;
-                if (current <= rating) {
-                    $(this).addClass('fa-solid fa-star active');
-                } else if (current - 0.5 === rating) {
-                    $(this).addClass('fa-solid fa-star-half-stroke active');
-                } else {
-                    $(this).addClass('fa-regular fa-star');
-                }
-            });
-        });
-    });
+    const contextPath = '${pageContext.request.contextPath}';
+    const bookId = '${book.bookId}';
 </script>
 
 <main role="main">
@@ -106,7 +42,14 @@
                 <p>${book.description}</p>
             </div>
         </div>
+        <div class="text-end mb-2">
+            <a href="${pageContext.request.contextPath}/book/bookList" class="btn btn-sm text-white"
+               style="background-color: #739db0; border-color: #759eb1; margin-top: 20px">
+                목록으로
+            </a>
+        </div>
     </div>
+
 
     <hr>
 
@@ -130,13 +73,12 @@
                     <i class="fa-regular fa-star" data-index="3"></i>
                     <i class="fa-regular fa-star" data-index="4"></i>
                     <i class="fa-regular fa-star" data-index="5"></i>
+                    <button type="submit" class="btn btn-primary" style="margin-left: 30px; background-color: #739db0; border-color: #759eb1">등록</button>
                 </div>
             </div>
-            <div class="text-end">
-                <button type="submit" class="btn btn-primary">리뷰 등록</button>
-            </div>
         </form>
-
+        <hr>
+        <hr>
 
         <!-- 리뷰 목록 -->
         <c:choose>
@@ -145,23 +87,64 @@
             </c:when>
             <c:otherwise>
                 <c:forEach var="review" items="${reviewList}">
-                    <div class="border-bottom pb-3 mb-3">
-                        <strong>${review.nickname}</strong>
-                        <span class="text-muted small"> |
-                        <fmt:formatDate value="${review.createdDate}" pattern="yyyy.MM.dd"/>
+                    <div class="review-item border-bottom pb-3 mb-3"
+                         id="review-${review.reviewId}"
+                         data-rating="${review.rating}"
+                         data-content="${fn:escapeXml(review.content)}">
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>${review.nickname}</strong>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- 닉네임 + 수정/삭제 -->
+                                <c:if test="${loginUser != null && loginUser.userId eq review.userId}">
+                                    <div class="text-muted small">
+                                        <a href="javascript:void(0);" onclick="editReview(${review.reviewId})">수정</a> |
+                                        <a href="javascript:void(0);" class="text-danger" onclick="deleteReview(${review.reviewId})">삭제</a>
+                                    </div>
+                                </c:if>
+
+                                <button class="like-btn btn btn-sm border-0"
+                                        data-review-id="${review.reviewId}"
+                                        <c:if test="${empty loginUser}">disabled</c:if>>
+                                    <i class="fa-heart <c:out value='${review.likedByUser ? "fa-solid text-danger" : "fa-regular"}'/>"></i>
+                                    <span class="like-count">${review.likeCount}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 날짜 + 별점 -->
+                        <div class="text-muted small d-flex align-items-center mt-1">
+                    <span>
+                        <fmt:formatDate value="${review.createDate}" pattern="yyyy.MM.dd" /> |
                     </span>
-                        <p class="mt-2">${review.content}</p>
+                            <span class="ms-2 text-warning" style="margin-left: 20px;">
+                        <c:forEach var="i" begin="1" end="5">
+                            <c:choose>
+                                <c:when test="${i <= review.rating}">
+                                    <i class="fa-solid fa-star"></i>
+                                </c:when>
+                                <c:when test="${i - review.rating <= 0.5}">
+                                    <i class="fa-solid fa-star-half-stroke"></i>
+                                </c:when>
+                                <c:otherwise>
+                                    <i class="fa-regular fa-star"></i>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </span>
+                        </div>
+
+                        <!-- 본문 내용 영역 (수정 시 이 영역만 바뀜) -->
+                        <div class="review-body mt-2">
+                            <p class="review-content">${review.content}</p>
+                        </div>
                     </div>
                 </c:forEach>
             </c:otherwise>
         </c:choose>
 
-        <!-- 더보기 버튼 -->
-        <div class="text-center mt-4">
-            <button class="btn btn-outline-secondary">+ 더보기</button>
-        </div>
     </div>
-
-
-
 </main>
+<script src="${pageContext.request.contextPath}/js/review.js"></script>

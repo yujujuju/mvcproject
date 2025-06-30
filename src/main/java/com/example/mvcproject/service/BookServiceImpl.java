@@ -1,6 +1,6 @@
 package com.example.mvcproject.service;
 
-import com.example.mvcproject.mapper.BoardMapper;
+import com.example.mvcproject.mapper.BookMapper;
 import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.PagingSearchVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @Service
-public class BoardServiceImpl {
+public class BookServiceImpl {
 
-    private final BoardMapper boardMapper;
+    private final BookMapper bookMapper;
 
     @Autowired
-    public BoardServiceImpl(BoardMapper boardMapper) {
-        this.boardMapper = boardMapper;
+    public BookServiceImpl(BookMapper bookMapper) {
+        this.bookMapper = bookMapper;
     }
 
     /**
@@ -25,7 +25,7 @@ public class BoardServiceImpl {
      * @return
      */
     public BookVO getBookById(int bookId) {
-        return boardMapper.selectBookById(bookId);
+        return bookMapper.selectBookById(bookId);
     }
 
     /**
@@ -33,7 +33,7 @@ public class BoardServiceImpl {
      * @return
      */
     public List<BookVO> getAllBooks(PagingSearchVO page) {
-        return boardMapper.selectAllBooks(page);
+        return bookMapper.selectAllBooks(page);
     }
 
     /**
@@ -41,7 +41,7 @@ public class BoardServiceImpl {
      * @return
      */
     public int getBookCount() {
-        return boardMapper.getBookCount();
+        return bookMapper.getBookCount();
     }
 
     /**
@@ -50,7 +50,7 @@ public class BoardServiceImpl {
      * @return
      */
     public int insertBook(BookVO book) {
-        return boardMapper.insertBook(book);
+        return bookMapper.insertBook(book);
     }
 
     /**
@@ -59,7 +59,7 @@ public class BoardServiceImpl {
      * @return
      */
     public int updateBook(BookVO book) {
-        return boardMapper.updateBook(book);
+        return bookMapper.updateBook(book);
     }
 
     /**
@@ -68,7 +68,7 @@ public class BoardServiceImpl {
      * @return
      */
     public int deleteBook(@PathVariable("id") int id) {
-        return boardMapper.deleteBook(id);
+        return bookMapper.deleteBook(id);
     }
 
     /**
@@ -76,9 +76,16 @@ public class BoardServiceImpl {
      * @return
      */
     public List<BookVO> getRecentBooks() {
-        return boardMapper.selectRecentBooks();
+        return bookMapper.selectRecentBooks();
     }
-    
+
+    /**
+     * 도서 리뷰 높은 순
+     * @return
+     */
+    public List<BookVO> getTopBooksByAvgRating() {
+        return bookMapper.selectTopBooksByAvgRating();
+    }
 
 
 }
