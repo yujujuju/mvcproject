@@ -40,9 +40,17 @@
                     <div class="col-md-8">
                         <p><strong>저자:</strong> ${book.author}</p>
                         <p><strong>출판사:</strong> ${book.publisher}</p>
-                        <p><strong>출판일:</strong> ${book.pubDate}</p>
-                        <p><strong>줄거리:</strong></p>
-                        <p>${book.description}</p>
+                        <p><strong>출판일:</strong> <fmt:formatDate value="${book.pubDate}" pattern="yyyy.MM.dd" /></p>
+                        <c:choose>
+                            <c:when test="${fn:length(book.description) > 200}">
+                                <p><strong>줄거리:</strong></p>
+                                <p>${fn:substring(book.description, 0, 200)}...</p>
+                            </c:when>
+                            <c:otherwise>
+                                <p><strong>줄거리:</strong></p>
+                                <p>${book.description}</p>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
                 <div class="mt-4 mb-5">

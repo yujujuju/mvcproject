@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -96,22 +97,30 @@ public class AdminController {
      * @throws IOException
      */
     @PostMapping("/book/register")
-    public String BookRegister(@ModelAttribute BookVO book,   @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+    public String BookRegister(@ModelAttribute BookVO book, BindingResult result,
+                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
 
-        // 파일 비었는지 체크
-        if (!imageFile.isEmpty()) {
-            String uploadDir = context.getRealPath("/upload/book"); // 서버 내부 경로(저장위치)
-            // 디렉토리 존재 확인, 없으면 생성
+        // 파일 업로드 체크
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String uploadDir = context.getRealPath("/upload/book");
             File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs(); {
-                // 파일 이름 겹치지 않게 업로드 시간 기반으로 파일명 생성
-                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-                File savedFile = new File(dir, fileName);
-                imageFile.transferTo(savedFile); // 서버 디스크에 저장
-                // 디비에 저장할 이미지 웹 경로
-                book.setImagePath("/upload/book/" + fileName);
-            }
+            if (!dir.exists()) dir.mkdirs();
 
+            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+            File savedFile = new File(dir, fileName);
+            imageFile.transferTo(savedFile);
+
+            book.setImagePath("/upload/book/" + fileName);// 업로드 이미지 경로 저장
+        }
+
+        // API 썸네일
+        else if (book.getThumbnailLink() != null && !book.getThumbnailLink().isEmpty()) {
+            book.setImagePath(book.getThumbnailLink());  // 카카오 API 썸네일 URL 저장
+        }
+
+        if (result.hasErrors()) {
+            System.out.println("에러: " + result.getAllErrors());
+            return "admin/book/register";
         }
 
         // 도서 정보 insert
@@ -296,6 +305,18 @@ public class AdminController {
         model.addAttribute("paging", user);
         model.addAttribute("searchType",searchType);
         return "mypage/admin/userList";
+    }
+
+    /**
+     * 도서 검색 팝업(카카오 책 API)
+     * @param query
+     * @param model
+     * @return
+     */
+    @GetMapping("/bookSearch")
+    public String BookSearch(@RequestParam(required = false) String query, Model model){
+        model.addAttribute("query", query);
+        return "mypage/admin/bookSearch";
     }
 
 

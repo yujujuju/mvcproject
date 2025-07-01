@@ -73,7 +73,7 @@
                    #{title},
                    #{author},
                    #{publisher},
-                   TO_DATE(#{pubDate}, 'YYYY-MM-DD'),
+                   #{pubDate},
                    #{description},
                    #{imagePath}
                )

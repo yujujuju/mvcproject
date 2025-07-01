@@ -60,9 +60,13 @@
 
                 <!-- 로그인 했을 시 마이페이지 노출 -->
                 <c:if test="${not empty sessionScope.loginUser}">
-                    <a href="${pageContext.request.contextPath}/mypage" class="btn btn-outline-light mr-2">마이페이지</a>
+                    <c:if test="${sessionScope.loginUser.role == 'USER'}">
+                        <a href="${pageContext.request.contextPath}/mypage" class="btn btn-outline-light mr-2">마이페이지</a>
+                    </c:if>
+                    <c:if test="${sessionScope.loginUser.role == 'ADMIN'}">
+                        <a href="${pageContext.request.contextPath}/mypage" class="btn btn-outline-light mr-2">관리자 홈</a>
+                    </c:if>
                 </c:if>
-
             </div>
 
         </div>

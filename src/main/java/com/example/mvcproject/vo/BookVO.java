@@ -1,5 +1,7 @@
 package com.example.mvcproject.vo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -11,9 +13,11 @@ public class BookVO extends PagingSearchVO {
     private String title;          // 도서 제목
     private String author;         // 저자
     private String publisher;      // 출판사
-    private Date pubDate;        // 출판일
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date pubDate; // 출판일
     private String description;    // 줄거리 / 내용
     private String imagePath;      // 썸네일 이미지 경로
+    private String thumbnailLink;  // API 썸네일 이미지 경로
     private Double avgRating; // 평균 별점
 
     public int getBookId() {
@@ -78,5 +82,13 @@ public class BookVO extends PagingSearchVO {
 
     public void setAvgRating(Double avgRating) {
         this.avgRating = avgRating;
+    }
+
+    public String getThumbnailLink() {
+        return thumbnailLink;
+    }
+
+    public void setThumbnailLink(String thumbnailLink) {
+        this.thumbnailLink = thumbnailLink;
     }
 }
