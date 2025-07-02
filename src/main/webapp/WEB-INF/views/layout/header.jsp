@@ -26,6 +26,7 @@
     <!-- 내 CSS -->
     <link rel="stylesheet" href="${ctx}/css/main.css">
     <link rel="stylesheet" href="${ctx}/css/book.css">
+    <link rel="stylesheet" href="${ctx}/css/manage.css">
 </head>
 
 <body>

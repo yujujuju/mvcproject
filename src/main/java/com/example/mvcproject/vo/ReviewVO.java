@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * 리뷰 VO
  */
-public class ReviewVO {
+public class ReviewVO extends PagingSearchVO{
 
     private int reviewId; // 리뷰 ID(PK)
     private int bookId; // 도서 ID(FK)
@@ -16,8 +16,9 @@ public class ReviewVO {
     private Date createDate; // 작성일
     private int likeCount; // 좋아요 카운트
     private boolean likedByUser; // 좋아요 누른 유저
+    private String bookTitle; // 도서 제목
 
-    public ReviewVO(int reviewId, int bookId, String userId, String nickname, Double rating, String content, Date createDate,int likeCount,boolean likedByUser) {
+    public ReviewVO(int reviewId, int bookId, String userId, String nickname, Double rating, String content, Date createDate,int likeCount,boolean likedByUser,String bookTitle) {
         this.reviewId = reviewId;
         this.bookId = bookId;
         this.userId = userId;
@@ -27,6 +28,7 @@ public class ReviewVO {
         this.createDate = createDate;
         this.likeCount = likeCount;
         this.likedByUser = likedByUser;
+        this.bookTitle = bookTitle;
     }
 
     public ReviewVO() {
@@ -103,5 +105,13 @@ public class ReviewVO {
 
     public void setLikedByUser(boolean likedByUser) {
         this.likedByUser = likedByUser;
+    }
+
+    public String getBookTitle() {
+        return bookTitle;
+    }
+
+    public void setBookTitle(String bookTitle) {
+        this.bookTitle = bookTitle;
     }
 }

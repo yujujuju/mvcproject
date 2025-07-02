@@ -2,10 +2,7 @@ package com.example.mvcproject.service;
 
 import com.example.mvcproject.mapper.AdminMapper;
 import com.example.mvcproject.mapper.UserMapper;
-import com.example.mvcproject.vo.BookRequestVO;
-import com.example.mvcproject.vo.BookVO;
-import com.example.mvcproject.vo.PagingSearchVO;
-import com.example.mvcproject.vo.UserVO;
+import com.example.mvcproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,5 +84,30 @@ public class AdminServiceImpl {
         return adminMapper.getUserCount(user);
     }
 
+    /**
+     * 도서 리뷰 삭제
+     * @param reviewId
+     * @return
+     */
+    public int deleteReview(int reviewId) {
+        return adminMapper.deleteReview(reviewId);
+    }
+
+    /**
+     * 유저 리뷰 전체 조회
+     * @param review
+     * @return
+     */
+    public List<ReviewVO> getAdminReviewList(ReviewVO review) {
+        return adminMapper.selectAllReviews(review);
+    }
+
+    /**
+     * 유저 리뷰 카운트
+     * @return
+     */
+    public int getTotalReviewCount() {
+        return adminMapper.selectReviewCount();
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.mvcproject.mapper;
 
 import com.example.mvcproject.vo.BookRequestVO;
 import com.example.mvcproject.vo.PagingSearchVO;
+import com.example.mvcproject.vo.ReviewVO;
 import com.example.mvcproject.vo.UserVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -60,5 +61,25 @@ public interface AdminMapper {
      * @return
      */
     int getUserCount(UserVO user);
+
+    /**
+     * 도서 리뷰 삭제
+     * @param reviewId
+     * @return
+     */
+    int deleteReview(int reviewId);
+
+    /**
+     * 리뷰 전체 조회
+     * @param review
+     * @return
+     */
+    List<ReviewVO> selectAllReviews(ReviewVO review);
+
+    /**
+     * 리뷰 카운트(페이징)
+     * @return
+     */
+    int selectReviewCount();
 
 }

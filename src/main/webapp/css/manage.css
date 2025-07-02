@@ -1,0 +1,9 @@
+.review-content {
+    max-width: 300px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+th, td {
+    vertical-align: middle !important;
+}

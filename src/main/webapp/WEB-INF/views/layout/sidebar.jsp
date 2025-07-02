@@ -35,12 +35,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/admin/book-requests">
-                        <span data-feather="clipboard"></span>
-                        도서 요청 관리
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/admin/review-manage">
                         <span data-feather="message-square"></span>
                         리뷰/댓글 관리

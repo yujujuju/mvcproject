@@ -2,10 +2,8 @@ package com.example.mvcproject.web;
 
 import com.example.mvcproject.service.AdminServiceImpl;
 import com.example.mvcproject.service.BookServiceImpl;
-import com.example.mvcproject.vo.BookRequestVO;
-import com.example.mvcproject.vo.BookVO;
-import com.example.mvcproject.vo.PagingSearchVO;
-import com.example.mvcproject.vo.UserVO;
+import com.example.mvcproject.service.ReviewServiceImpl;
+import com.example.mvcproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +31,9 @@ public class AdminController {
 
     @Autowired
     private BookServiceImpl boardService;
+
+    @Autowired
+    private ReviewServiceImpl reviewService;
 
     @Autowired
     public AdminController(AdminServiceImpl adminService) {
@@ -317,6 +318,44 @@ public class AdminController {
     public String BookSearch(@RequestParam(required = false) String query, Model model){
         model.addAttribute("query", query);
         return "mypage/admin/bookSearch";
+    }
+
+    /**
+     * 사용자 리뷰 관리(조회)
+     * @param page
+     * @param model
+     * @return
+     */
+    @GetMapping("review-manage")
+    public String reviewManage(@RequestParam(defaultValue = "1")int page, Model model) {
+
+        int totalCount = adminService.getTotalReviewCount();
+
+        ReviewVO review = new ReviewVO();
+        review.setPage(page);
+        review.setPageSize(10);
+        review.setTotalRecord(totalCount);
+
+        // 리뷰 목록 조회
+        List<ReviewVO> reviewList = adminService.getAdminReviewList(review);
+
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("paging", review);
+
+        return "mypage/admin/reviewManage";
+
+    }
+
+    /**
+     * 사용자 리뷰 삭제
+     * @param reviewId
+     * @return
+     */
+    @PostMapping(value = "review-manage", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String deleteReview(@RequestParam("reviewId") int reviewId) {
+        int result = adminService.deleteReview(reviewId);
+        return String.valueOf(result);
     }
 
 

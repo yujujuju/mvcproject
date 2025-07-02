@@ -39,6 +39,20 @@
         <result property="lastLogin" column="LAST_LOGIN"/>
     </resultMap>
 
+    <!-- 리뷰VO -->
+    <resultMap id="reviewMap" type="ReviewVO">
+        <id property="reviewId" column="REVIEW_ID" />
+        <result property="bookId" column="BOOK_ID" />
+        <result property="userId" column="USER_ID" />
+        <result property="nickname" column="NICKNAME" />
+        <result property="rating" column="RATING" />
+        <result property="content" column="CONTENT" />
+        <result property="createDate" column="CREATED_AT" />
+        <result property="likeCount" column="LIKE_COUNT" />
+        <result property="likedByUser" column="LIKED_BY_USER" />
+        <result property="bookTitle" column="BOOK_TITLE" />
+    </resultMap>
+
     <!-- 관리자용 도서 요청 전체 목록 조회 -->
     <select id="selectAllBookRequests" resultType="BookRequestVO" resultMap="bookRequestMap">
         SELECT *
@@ -123,6 +137,45 @@
                 AND USER_ID LIKE '%' || #{keyword} || '%'
             </if>
         </where>
+    </select>
+
+    <!-- 도서 리뷰 삭제 -->
+    <delete id="deleteReview" parameterType="int">
+        DELETE FROM REVIEW
+              WHERE REVIEW_ID = #{reviewId}
+    </delete>
+
+    <select id="selectAllReviews" parameterType="reviewVO" resultMap="reviewMap">
+        <![CDATA[
+        SELECT * FROM (
+              SELECT ROWNUM AS RN, A.* FROM
+                    (
+                    SELECT
+                        R.REVIEW_ID,
+                        R.BOOK_ID,
+                        B.TITLE AS BOOK_TITLE,
+                        R.USER_ID,
+                        U.NICKNAME,
+                        R.RATING,
+                        R.CONTENT,
+                        R.CREATED_AT,
+
+                        -- 좋아요 수
+                        (SELECT COUNT(*) FROM REVIEW_LIKE RL WHERE RL.REVIEW_ID = R.REVIEW_ID) AS LIKE_COUNT
+
+                    FROM REVIEW R
+                             JOIN USERS U ON R.USER_ID = U.USER_ID
+                             JOIN BOOK B ON R.BOOK_ID = B.BOOK_ID
+                    ORDER BY R.CREATED_AT DESC
+                    ) A
+              WHERE ROWNUM <= #{endRow}
+          )
+        WHERE RN >= #{startRow}
+        ]]>
+    </select>
+
+    <select id="selectReviewCount" resultType="int">
+        SELECT COUNT(*) FROM REVIEW
     </select>
 
 
