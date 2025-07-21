@@ -61,31 +61,31 @@ textarea.form-control {
 }
 
 .slider-item .badge {
-    margin-bottom: 10px; /* 별점과 뱃지 사이 간격 벌리기 */
+    margin-bottom: 10px; 
     display: inline-block;
 }
 
 .slider-item .book-title {
     margin-top: 8px;
-    margin-bottom: 4px; /* 제목-별점 사이 좁히기 */
+    margin-bottom: 4px;
 }
 
 .slider-item .avg-rating {
-    margin-top: 0; /* 별점 위쪽 여백 제거 */
+    margin-top: 0;
 }
 
 .book-slider.flex-wrap {
-    justify-content: flex-start !important; /* Top1 책을 왼쪽 정렬 */
+    justify-content: flex-start !important;
 }
 
 .bg-review-best {
-    background-color: rgba(112, 155, 243, 0.55); /* 연한 블루톤 예시 */
+    background-color: rgba(112, 155, 243, 0.55);
 }
 
 .book-slider {
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding-right: 40px;  /* ✅ 마지막 아이템 잘림 방지 */
+    padding-right: 40px;
 }
 
 
@@ -109,4 +109,56 @@ textarea.form-control {
 }
 .scroll-btn.right {
     right: 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #343a40;
+    border-left: 4px solid #729caf;
+    padding-left: 12px;
+    margin-bottom: 1.5rem;
+}
+.search-wrapper {
+    margin-left: auto;
+}
+
+.search-input {
+    width: 400px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 14px;
+    transition: box-shadow 0.3s ease;
+    color: black;
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #536bf6;
+    border-color: #536bf6;
+}
+
+.search-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #536bf6;
+    color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+    transition: background 0.3s ease;
+}
+
+.search-icon:hover {
+    background-color: #1A237E;
+}
+
+.review-content2{
+    white-space: pre-wrap;
+    word-break: break-word;
 }

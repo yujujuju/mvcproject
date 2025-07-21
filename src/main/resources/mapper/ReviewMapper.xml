@@ -15,6 +15,7 @@
         <result property="createDate" column="CREATED_AT" />
         <result property="likeCount" column="LIKE_COUNT" />
         <result property="likedByUser" column="LIKED_BY_USER" />
+        <result property="bookTitle" column="BOOK_TITLE" />
     </resultMap>
 
     <!-- 댓글 INSERT -->
@@ -114,6 +115,40 @@
         FROM REVIEW_LIKE
         WHERE REVIEW_ID = #{reviewId}
     </select>
+
+    <!-- 내 리뷰 조회 -->
+    <select id="selectMyReview"  parameterType="reviewVO"  resultMap="reviewMap">
+     <![CDATA[
+            SELECT * FROM (
+                  SELECT ROWNUM AS RN, A.* FROM
+                        (
+                        SELECT
+                            R.REVIEW_ID,
+                            R.BOOK_ID,
+                            B.TITLE AS BOOK_TITLE,
+                            R.USER_ID,
+                            U.NICKNAME,
+                            R.RATING,
+                            R.CONTENT,
+                            R.CREATED_AT
+                        FROM REVIEW R
+                                 JOIN USERS U ON R.USER_ID = U.USER_ID
+                                 JOIN BOOK B ON R.BOOK_ID = B.BOOK_ID
+                        WHERE R.USER_ID = #{userId}
+                        ORDER BY R.CREATED_AT DESC
+                        ) A
+                  WHERE ROWNUM <= #{endRow}
+              )
+            WHERE RN >= #{startRow}
+            ]]>
+    </select>
+
+    <!-- 내 리뷰 조회 카운트 -->
+    <select id="selectMyReviewCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM REVIEW WHERE USER_ID = #{userId}
+    </select>
+
+
 
 
 

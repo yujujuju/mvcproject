@@ -1,8 +1,10 @@
 package com.example.mvcproject.web;
 
+import com.example.mvcproject.service.ReviewServiceImpl;
 import com.example.mvcproject.service.UserServiceImpl;
 import com.example.mvcproject.vo.BookRequestVO;
 import com.example.mvcproject.vo.BookVO;
+import com.example.mvcproject.vo.ReviewVO;
 import com.example.mvcproject.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,7 @@ public class UserController {
 
     @Autowired
     private UserServiceImpl userService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -121,67 +124,5 @@ public class UserController {
         return "redirect:/";
     }
 
-    /**
-     * 도서 요청 화면
-     * @param model
-     * @return
-     */
-    @GetMapping("/requestBook")
-    public String requestBookForm(Model model, @SessionAttribute("loginUser")UserVO loginUser) {
-
-        //도서 요청 횟수
-        int todayCount = userService.countTodayRequest(loginUser.getUserId());
-
-        model.addAttribute("requestBook", new BookVO());
-        model.addAttribute("todayCount", todayCount);
-        return "mypage/user/bookRequest";
-    }
-
-    /**
-     * 도서 요청
-     * @param requestBook
-     * @param redirectAttributes
-     * @return
-     */
-    @PostMapping("/requestBook")
-    public String submitBookRequest(@ModelAttribute("requestBook") BookRequestVO requestBook, @SessionAttribute("loginUser") UserVO loginUser, RedirectAttributes redirectAttributes){
-
-        //사용자 ID 세팅
-        requestBook.setUserId(loginUser.getUserId());
-
-        //도서 요청 횟수 제한(하루 3번)
-        int todayCount = userService.countTodayRequest(loginUser.getUserId());
-
-        if (todayCount >= 3) {
-            redirectAttributes.addFlashAttribute("msg", "도서 요청은 하루 3회까지만 가능합니다.");
-            return "redirect:/user/requestBook";
-        }
-
-        //도서 요청 insert
-        int result = userService.saveBookRequest(requestBook);
-
-        if (result > 0) {
-            redirectAttributes.addFlashAttribute("msg", "도서 요청이 등록되었습니다.");
-        } else {
-            redirectAttributes.addFlashAttribute("msg", "요청 처리 중 오류가 발생했습니다.");
-        }
-        return "redirect:/user/requestBook";
-    }
-
-    /**
-     * 도서 요청 현황
-     * @param model
-     * @param loginUser
-     * @return
-     */
-    @GetMapping("/requestList")
-    public String requestList(Model model, @SessionAttribute("loginUser")UserVO loginUser) {
-
-        List<BookRequestVO> requestList = userService.getBookRequestList(loginUser.getUserId());
-        model.addAttribute("requestList", requestList);
-
-        return "mypage/user/bookRequestList";
-
-    }
 
 }

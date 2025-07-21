@@ -5,6 +5,7 @@ import com.example.mvcproject.mapper.ReviewMapper;
 import com.example.mvcproject.vo.BookVO;
 import com.example.mvcproject.vo.ReviewLikeVO;
 import com.example.mvcproject.vo.ReviewVO;
+import com.example.mvcproject.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -121,6 +122,23 @@ public class ReviewServiceImpl {
         return reviewMapper.deleteReviewLike(like);
     }
 
+    /**
+     * 내 리뷰 조회
+     * @param review
+     * @return
+     */
+    public List<ReviewVO> getMyReview(ReviewVO review) {
+        return reviewMapper.selectMyReview(review);
+    }
+
+    /**
+     * 내 리뷰 조회 카운트
+     * @param userId
+     * @return
+     */
+    public int getMyReviewCount(String userId) {
+        return reviewMapper.selectMyReviewCount(userId);
+    }
 
 
 

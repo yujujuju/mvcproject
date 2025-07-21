@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -33,9 +34,6 @@ public class AdminController {
     private BookServiceImpl boardService;
 
     @Autowired
-    private ReviewServiceImpl reviewService;
-
-    @Autowired
     public AdminController(AdminServiceImpl adminService) {
         this.adminService = adminService;
     }
@@ -44,23 +42,28 @@ public class AdminController {
     private ServletContext context;
 
     /**
+     * 세션 및 권한 체크 공통 메서드
+     */
+    private boolean isAdmin(HttpSession session) {
+        UserVO loginUser = (UserVO) session.getAttribute("loginUser");
+        return loginUser != null && "ADMIN".equalsIgnoreCase(loginUser.getRole());
+    }
+
+    /**
      * 도서 목록
      * @return
      */
     @GetMapping("/book/list")
-    public String list(Model model, @RequestParam(defaultValue = "1")int page) {
+    public String list(Model model, @RequestParam(defaultValue = "1") int page, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/user/login";
+
         int pageSize = 10;
-
-        // 전체 게시글 수 조회
         int totalCount = boardService.getBookCount();
-
-        // 페이징 VO 생성
         PagingSearchVO paging = new PagingSearchVO();
         paging.setPage(page);
         paging.setPageSize(pageSize);
         paging.setTotalRecord(totalCount);
 
-        // 도서 목록 조회
         List<BookVO> bookList = boardService.getAllBooks(paging);
         model.addAttribute("bookList", bookList);
         model.addAttribute("paging", paging);
@@ -72,18 +75,15 @@ public class AdminController {
      * @return
      */
     @GetMapping("/book/register")
-    public String BookRegister(Model model,@ModelAttribute("preFillBook") BookRequestVO preFillBook) {
-        BookVO book = new BookVO();
+    public String BookRegister(Model model, @ModelAttribute("preFillBook") BookRequestVO preFillBook, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/user/login";
 
-        // 요청도서 데이터 넘어온거 있으면 새로운 book 객체에 set해서 바인딩
+        BookVO book = new BookVO();
         if (preFillBook != null && preFillBook.getTitle() != null) {
             book.setTitle(preFillBook.getTitle());
             book.setAuthor(preFillBook.getAuthor());
             book.setPublisher(preFillBook.getPublisher());
         }
-
-        // 바인딩한 값 뷰로 전달
-        // priFillBook 값이 null이면 새로 등록
         model.addAttribute("book", book);
         model.addAttribute("mode", "create");
         model.addAttribute("formAction", "/admin/book/register");
@@ -99,9 +99,10 @@ public class AdminController {
      */
     @PostMapping("/book/register")
     public String BookRegister(@ModelAttribute BookVO book, BindingResult result,
-                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                               HttpSession session) throws IOException {
+        if (!isAdmin(session)) return "redirect:/user/login";
 
-        // 파일 업로드 체크
         if (imageFile != null && !imageFile.isEmpty()) {
             String uploadDir = context.getRealPath("/upload/book");
             File dir = new File(uploadDir);
@@ -110,24 +111,18 @@ public class AdminController {
             String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
             File savedFile = new File(dir, fileName);
             imageFile.transferTo(savedFile);
-
-            book.setImagePath("/upload/book/" + fileName);// 업로드 이미지 경로 저장
-        }
-
-        // API 썸네일
-        else if (book.getThumbnailLink() != null && !book.getThumbnailLink().isEmpty()) {
-            book.setImagePath(book.getThumbnailLink());  // 카카오 API 썸네일 URL 저장
+            book.setImagePath("/upload/book/" + fileName);
+        } else if (book.getThumbnailLink() != null && !book.getThumbnailLink().isEmpty()) {
+            book.setImagePath(book.getThumbnailLink());
         }
 
         if (result.hasErrors()) {
             System.out.println("에러: " + result.getAllErrors());
-            return "admin/book/register";
+            return "mypage/admin/bookRegister";
         }
 
-        // 도서 정보 insert
         boardService.insertBook(book);
         return "redirect:/admin/book/list";
-
     }
 
     /**
@@ -137,13 +132,16 @@ public class AdminController {
      * @return
      */
     @GetMapping("/book/edit/{id}")
-    public String BookEdit(@PathVariable int id, Model model) {
+    public String BookEdit(@PathVariable int id, Model model, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/user/login";
+
         BookVO book = boardService.getBookById(id);
         model.addAttribute("book", book);
         model.addAttribute("mode", "edit");
         model.addAttribute("formAction", "/admin/book/update");
         return "mypage/admin/bookRegister";
     }
+
 
     /**
      * 도서 수정
@@ -153,26 +151,21 @@ public class AdminController {
      * @throws IOException
      */
     @PostMapping("/book/update")
-    public String updateBook(@ModelAttribute BookVO book, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+    public String updateBook(@ModelAttribute BookVO book, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, HttpSession session) throws IOException {
+        if (!isAdmin(session)) return "redirect:/user/login";
 
-        // 이미지 새로 업로드된 경우만 처리
-        if (!imageFile.isEmpty()) {
-            // 저장 디렉토리 설정
+        if (imageFile != null && !imageFile.isEmpty()) {
             String uploadDir = context.getRealPath("/upload/book");
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
-            // 파일명 중복 방지를 위한 타임스탬프
             String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
             File savedFile = new File(dir, fileName);
             imageFile.transferTo(savedFile);
-
-            // 이미지 경로 BookVO에 세팅
             book.setImagePath("/upload/book/" + fileName);
         }
 
         boardService.updateBook(book);
-
         return "redirect:/admin/book/list";
     }
 
@@ -183,7 +176,10 @@ public class AdminController {
      * @return
      */
     @GetMapping("/book/detail/{id}")
-    public String BookDetail(@PathVariable("id") int id, Model model) {
+    public String BookDetail(@PathVariable("id") int id, Model model, HttpSession session) {
+
+        if (!isAdmin(session)) return "redirect:/user/login";
+
         BookVO book = boardService.getBookById(id);
         model.addAttribute("book", book);
         return "mypage/admin/bookDetail";
@@ -211,7 +207,9 @@ public class AdminController {
      * @return
      */
     @GetMapping("/book/requestList")
-    public String requestBookList(Model model, @RequestParam(defaultValue = "1") int page) {
+    public String requestBookList(Model model, @RequestParam(defaultValue = "1") int page, HttpSession session) {
+
+        if (!isAdmin(session)) return "redirect:/user/login";
 
         int pageSize = 10;
         int totalCount = adminService.getBookRequestCount();
@@ -233,7 +231,9 @@ public class AdminController {
      * @return
      */
     @GetMapping("/book/requestDetail/{id}")
-    public String requestDetail(@PathVariable("id") int requestId, Model model) {
+    public String requestDetail(@PathVariable("id") int requestId, Model model,HttpSession session) {
+
+        if (!isAdmin(session)) return "redirect:/user/login";
 
         //요청 id로 요청 정보 조회
         BookRequestVO request = adminService.getBookRequestById(requestId);
@@ -287,7 +287,9 @@ public class AdminController {
      * @return
      */
     @GetMapping("/user/list")
-    public String userList(@RequestParam(defaultValue = "1")int page,@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "nickname") String searchType, Model model) {
+    public String userList(@RequestParam(defaultValue = "1")int page,@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "nickname") String searchType, Model model,HttpSession session) {
+
+        if (!isAdmin(session)) return "redirect:/user/login";
 
         UserVO user = new UserVO();
         user.setPage(page);
@@ -302,7 +304,7 @@ public class AdminController {
         List<UserVO> userList = adminService.getUserList(user);
 
         model.addAttribute("userList", userList);
-        model.addAttribute("searchName", keyword);  
+        model.addAttribute("searchName", keyword);
         model.addAttribute("paging", user);
         model.addAttribute("searchType",searchType);
         return "mypage/admin/userList";
@@ -315,7 +317,10 @@ public class AdminController {
      * @return
      */
     @GetMapping("/bookSearch")
-    public String BookSearch(@RequestParam(required = false) String query, Model model){
+    public String BookSearch(@RequestParam(required = false) String query, Model model,HttpSession session){
+
+        if (!isAdmin(session)) return "redirect:/user/login";
+
         model.addAttribute("query", query);
         return "mypage/admin/bookSearch";
     }
@@ -327,7 +332,9 @@ public class AdminController {
      * @return
      */
     @GetMapping("review-manage")
-    public String reviewManage(@RequestParam(defaultValue = "1")int page, Model model) {
+    public String reviewManage(@RequestParam(defaultValue = "1")int page, Model model,HttpSession session) {
+
+        if (!isAdmin(session)) return "redirect:/user/login";
 
         int totalCount = adminService.getTotalReviewCount();
 

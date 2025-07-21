@@ -32,8 +32,9 @@
     <div class="container mt-5">
         <div class="row mt-4">
             <div class="col-md-4">
-                <img src="${pageContext.request.contextPath}${book.imagePath}" class="img-thumbnail" alt="썸네일">
+                <img src="${book.imagePath}" class="img-thumbnail book-thumb" alt="썸네일">
             </div>
+
             <div class="col-md-8">
                 <p style="font-size: 25px;"><strong>${book.title}</strong></p>
                 <p>${book.author} 저 | ${book.publisher}</p>
@@ -92,7 +93,6 @@
                          data-rating="${review.rating}"
                          data-content="${fn:escapeXml(review.content)}">
 
-
                         <div class="d-flex justify-content-between align-items-center">
                             <strong>${review.nickname}</strong>
 
@@ -138,7 +138,7 @@
 
                         <!-- 본문 내용 영역 (수정 시 이 영역만 바뀜) -->
                         <div class="review-body mt-2">
-                            <p class="review-content">${review.content}</p>
+                            <p class="review-content2">${review.content}</p>
                         </div>
                     </div>
                 </c:forEach>

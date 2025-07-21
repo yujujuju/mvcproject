@@ -87,5 +87,23 @@ public class BookServiceImpl {
         return bookMapper.selectTopBooksByAvgRating();
     }
 
+    /**
+     * 도서 검색
+     * @param book
+     * @return
+     */
+    public List<BookVO> searchBooksByTitle(BookVO book) {
+        return bookMapper.searchBooksByTitle(book);
+    }
+
+    /**
+     * 도서 검색 카운트
+     * @param book
+     * @return
+     */
+    public int getSearchBookCount(BookVO book) {
+        return bookMapper.getSearchBookCount(book);
+    }
+
 
 }

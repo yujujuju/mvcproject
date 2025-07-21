@@ -9,10 +9,7 @@ import com.example.mvcproject.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -42,24 +39,35 @@ public class BookController {
      * @return
      */
     @GetMapping("/bookList")
-    public String Booklist(Model model, @RequestParam(defaultValue = "1")int page) {
-        int pageSize = 10;
+    public String bookList(@ModelAttribute BookVO book, Model model) {
 
-        // 전체 게시글 수 조회
-        int totalCount = bookService.getBookCount();
+        int pageSize = 18;
+        book.setPageSize(pageSize);
 
-        // 페이징 VO 생성
-        PagingSearchVO paging = new PagingSearchVO();
-        paging.setPage(page);
-        paging.setPageSize(pageSize);
-        paging.setTotalRecord(totalCount);
+        int totalCount;
+        List<BookVO> bookList;
 
-        // 도서 목록 조회
-        List<BookVO> bookList = bookService.getAllBooks(paging);
+        // 키워드 있는 경우 → 검색
+        if (book.getKeyword() != null && !book.getKeyword().trim().isEmpty()) {
+            totalCount = bookService.getSearchBookCount(book);
+            book.setTotalRecord(totalCount);
+
+            bookList = bookService.searchBooksByTitle(book);
+            model.addAttribute("keyword", book.getKeyword()); // input 유지용
+        } else {
+            totalCount = bookService.getBookCount();
+            book.setTotalRecord(totalCount);
+
+            bookList = bookService.getAllBooks(book);
+        }
+
         model.addAttribute("bookList", bookList);
-        model.addAttribute("paging", paging);
+        model.addAttribute("paging", book);
+
         return "book/bookList";
     }
+
+
 
     /**
      * 도서 상세보기 (도서정보,리뷰)

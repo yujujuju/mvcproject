@@ -63,4 +63,19 @@ public interface BookMapper {
      * @return
      */
     List<BookVO> selectTopBooksByAvgRating();
+
+    /**
+     * 검색 키워드
+     * @param book
+     * @return
+     */
+    List<BookVO> searchBooksByTitle(BookVO book);
+
+    /**
+     * 검색 카운트
+     * @param book
+     * @return
+     */
+    int getSearchBookCount(BookVO book);
+
 }

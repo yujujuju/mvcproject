@@ -45,19 +45,19 @@
             <!-- 사용자 메뉴 -->
             <c:if test="${sessionScope.loginUser.role == 'USER'}">
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/user/requestBook">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/mypage/requestBook">
                         <span data-feather="plus-square"></span>
                         도서 요청하기
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/user/requestList">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/mypage/requestList">
                         <span data-feather="book-open"></span>
                         도서 요청 현황
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/user/reviews">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/mypage/reviews">
                         <span data-feather="edit-3"></span>
                         내 리뷰 보기
                     </a>

@@ -8,14 +8,26 @@
         <main role="main">
             <%@ include file="/WEB-INF/views/layout/menubar.jsp" %>
             <div class="container">
-            <h2 class="section-title">도서 목록</h2>
 
-            <div class="row g-4 justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="section-title mb-0"><a href="${pageContext.request.contextPath}/book/bookList"> 도서 목록</a></h2>
+
+                    <div class="search-wrapper d-flex align-items-center">
+                        <form action="${pageContext.request.contextPath}/book/bookList" method="get" class="d-flex">
+                            <input type="text" class="form-control search-input" name="keyword" value="${keyword}" placeholder="도서 검색">
+                            <button type="submit" class="btn search-icon ms-2">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row g-4 justify-content-center">
                 <c:forEach var="book" items="${bookList}">
                     <div class="col-md-2 col-6 book-card">
                         <a href="${pageContext.request.contextPath}/book/detail/${book.bookId}">
                         <img class="book-cover"
-                             src="${pageContext.request.contextPath}${book.imagePath}"
+                             src="${book.imagePath}"
                              alt="${book.title}"
                              width="140" height="140">
                         </a>
@@ -24,6 +36,13 @@
                         <p class="text-muted">${book.author}</p>
                     </div>
                 </c:forEach>
+
+                <c:if test="${empty bookList}">
+                    <div class="col-12 text-center text-muted py-5">
+                        <i class="bi bi-emoji-frown" style="font-size: 2rem;"></i><br/>
+                        <strong>검색 결과가 없습니다.</strong>
+                    </div>
+                </c:if>
             </div>
             </div>
 

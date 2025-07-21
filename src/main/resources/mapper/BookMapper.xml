@@ -127,6 +127,33 @@
 
     </select>
 
+    <!-- 도서 검색 -->
+    <select id="searchBooksByTitle" resultMap="bookMap"  parameterType="BookVO">
+    <![CDATA[
+        SELECT * FROM (
+              SELECT ROWNUM AS RN, A.* FROM
+                   (
+                    SELECT *
+                    FROM BOOK
+                    WHERE TITLE LIKE '%' || #{keyword} || '%'
+                       OR AUTHOR LIKE '%' || #{keyword} || '%'
+                    ORDER BY BOOK_ID DESC
+                    ) A
+              WHERE ROWNUM <= #{endRow}
+        )
+        WHERE RN >= #{startRow}
+        ]]>
+    </select>
+
+    <!-- 도서 검색 카운트 -->
+    <select id="getSearchBookCount" resultType="int"  parameterType="BookVO">
+        SELECT COUNT(*)
+        FROM BOOK
+        WHERE TITLE LIKE '%' || #{keyword} || '%'
+           OR AUTHOR LIKE '%' || #{keyword} || '%'
+    </select>
+
+
 
 
 

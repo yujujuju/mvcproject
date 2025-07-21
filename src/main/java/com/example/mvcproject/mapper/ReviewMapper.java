@@ -77,4 +77,18 @@ public interface ReviewMapper {
      */
     int removeReviewLike(ReviewLikeVO like);
 
+    /**
+     * 내 리뷰 조회
+     * @param review
+     * @return
+     */
+    List<ReviewVO> selectMyReview(ReviewVO review);
+
+    /**
+     * 내 리뷰 조회 카운트
+     * @param userId
+     * @return
+     */
+    int selectMyReviewCount(String userId);
+
 }
